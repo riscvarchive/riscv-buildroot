@@ -1,0 +1,24 @@
+#
+# Append the appropriate RISC-V ISA extensions to the
+# BR2_GCC_TARGET_ARCH variable.
+#
+
+BR2_RISCV_GCC_ARCH = $(call qstrip,$(BR2_GCC_TARGET_ARCH))
+
+ifeq ($(BR2_RISCV_ISA_RVM),y)
+BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)m
+endif
+ifeq ($(BR2_RISCV_ISA_RVA),y)
+BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)a
+endif
+ifeq ($(BR2_RISCV_ISA_RVF),y)
+BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)f
+endif
+ifeq ($(BR2_RISCV_ISA_RVD),y)
+BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)d
+endif
+ifeq ($(BR2_RISCV_ISA_RVC),y)
+BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)c
+endif
+
+BR2_GCC_TARGET_ARCH := $(patsubst %,"%",$(BR2_RISCV_GCC_ARCH))

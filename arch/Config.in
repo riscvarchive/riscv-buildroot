@@ -198,6 +198,27 @@ config BR2_powerpc64le
 	  http://www.power.org/
 	  http://en.wikipedia.org/wiki/Powerpc
 
+config BR2_riscv32
+	bool "RISCV32"
+	select BR2_ARCH_HAS_MMU_OPTIONAL
+	help
+	  RISC-V is an open, free Instruction Set Architecture created
+	  by the UC Berkeley Architecture Research group and supported
+	  and promoted by RISC-V Foundation.
+	  https://riscv.org/
+	  https://en.wikipedia.org/wiki/RISC-V
+
+config BR2_riscv64
+	bool "RISCV64"
+	select BR2_ARCH_IS_64
+	select BR2_ARCH_HAS_MMU_OPTIONAL
+	help
+	  RISC-V is an open, free Instruction Set Architecture created
+	  by the UC Berkeley Architecture Research group and supported
+	  and promoted by RISC-V Foundation.
+	  https://riscv.org/
+	  https://en.wikipedia.org/wiki/RISC-V
+
 config BR2_sh
 	bool "SuperH"
 	select BR2_ARCH_HAS_MMU_OPTIONAL
@@ -421,6 +442,10 @@ endif
 
 if BR2_powerpc || BR2_powerpc64 || BR2_powerpc64le
 source "arch/Config.in.powerpc"
+endif
+
+if BR2_riscv32 || BR2_riscv64
+source "arch/Config.in.riscv"
 endif
 
 if BR2_sh
