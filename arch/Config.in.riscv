@@ -2,7 +2,6 @@
 
 config BR2_RISCV_ISA_RVI
 	bool
-	select BR2_ARCH_NEEDS_GCC_AT_LEAST_7
 
 config BR2_RISCV_ISA_RVM
 	bool
@@ -34,21 +33,10 @@ config BR2_riscv_g
 	help
 	  General purpose (G) is equivalent to IMAFD.
 
-config BR2_riscv_u54mc
-	bool "SiFive U54-MC (GC)"
-	depends on BR2_ARCH_IS_64
-	select BR2_RISCV_ISA_RVI
-	select BR2_RISCV_ISA_RVM
-	select BR2_RISCV_ISA_RVA
-	select BR2_RISCV_ISA_RVF
-	select BR2_RISCV_ISA_RVD
-	select BR2_RISCV_ISA_RVC
-	help
-	  SiFive U54-MC 64-bit Multi-Core RISC-V Applications Core
-
 config BR2_riscv_custom
 	bool "Custom architecture"
 	select BR2_RISCV_ISA_RVI
+	select BR2_RISCV_ISA_CUSTOM_RVA
 
 endchoice
 
@@ -78,23 +66,14 @@ config BR2_RISCV_ISA_CUSTOM_RVC
 	select BR2_RISCV_ISA_RVC
 endif
 
+config BR2_RISCV_64
+	bool
+	default y
+	select BR2_ARCH_IS_64
 
 choice
 	prompt "Target ABI"
-	default BR2_RISCV_ABI_ILP32 if !BR2_ARCH_IS_64
-	default BR2_RISCV_ABI_LP64 if BR2_ARCH_IS_64
-
-config BR2_RISCV_ABI_ILP32
-	bool "ilp32"
-	depends on !BR2_ARCH_IS_64
-
-config BR2_RISCV_ABI_ILP32F
-	bool "ilp32f"
-	depends on !BR2_ARCH_IS_64 && BR2_RISCV_ISA_RVF
-
-config BR2_RISCV_ABI_ILP32D
-	bool "ilp32d"
-	depends on !BR2_ARCH_IS_64 && BR2_RISCV_ISA_RVD
+	default BR2_RISCV_ABI_LP64
 
 config BR2_RISCV_ABI_LP64
 	bool "lp64"
@@ -110,21 +89,12 @@ config BR2_RISCV_ABI_LP64D
 endchoice
 
 config BR2_ARCH
-	default "riscv32" if BR2_riscv32
-	default "riscv64" if BR2_riscv64
+	default "riscv64" if BR2_ARCH_IS_64
 
 config BR2_ENDIAN
 	default "LITTLE"
 
-config BR2_GCC_TARGET_ARCH
-#	Instruction set extension characters are appended by arch/arch.mk.riscv
-	default "rv32i" if BR2_riscv32
-	default "rv64i" if BR2_riscv64
-
 config BR2_GCC_TARGET_ABI
-	default "ilp32" if BR2_RISCV_ABI_ILP32
-	default "ilp32f" if BR2_RISCV_ABI_ILP32F
-	default "ilp32d" if BR2_RISCV_ABI_ILP32D
 	default "lp64" if BR2_RISCV_ABI_LP64
 	default "lp64f" if BR2_RISCV_ABI_LP64F
 	default "lp64d" if BR2_RISCV_ABI_LP64D

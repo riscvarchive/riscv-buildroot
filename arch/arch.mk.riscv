@@ -1,24 +1,30 @@
 #
-# Append the appropriate RISC-V ISA extensions to the
-# BR2_GCC_TARGET_ARCH variable.
+# Configure the GCC_TARGET_ARCH variable and append the
+# appropriate RISC-V ISA extensions.
 #
 
-BR2_RISCV_GCC_ARCH = $(call qstrip,$(BR2_GCC_TARGET_ARCH))
+ifeq ($(BR2_riscv),y)
+
+ifeq ($(BR2_ARCH_IS_64),y)
+RISCV_GCC_ARCH = rv64i
+endif
 
 ifeq ($(BR2_RISCV_ISA_RVM),y)
-BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)m
+RISCV_GCC_ARCH := $(RISCV_GCC_ARCH)m
 endif
 ifeq ($(BR2_RISCV_ISA_RVA),y)
-BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)a
+RISCV_GCC_ARCH := $(RISCV_GCC_ARCH)a
 endif
 ifeq ($(BR2_RISCV_ISA_RVF),y)
-BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)f
+RISCV_GCC_ARCH := $(RISCV_GCC_ARCH)f
 endif
 ifeq ($(BR2_RISCV_ISA_RVD),y)
-BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)d
+RISCV_GCC_ARCH := $(RISCV_GCC_ARCH)d
 endif
 ifeq ($(BR2_RISCV_ISA_RVC),y)
-BR2_RISCV_GCC_ARCH := $(BR2_RISCV_GCC_ARCH)c
+RISCV_GCC_ARCH := $(RISCV_GCC_ARCH)c
 endif
 
-BR2_GCC_TARGET_ARCH := $(patsubst %,"%",$(BR2_RISCV_GCC_ARCH))
+GCC_TARGET_ARCH := $(RISCV_GCC_ARCH)
+
+endif

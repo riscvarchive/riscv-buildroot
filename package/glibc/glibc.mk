@@ -77,6 +77,26 @@ endif
 # Note that as mentionned in
 # http://patches.openembedded.org/patch/38849/, glibc must be
 # built with -O2, so we pass our own CFLAGS and CXXFLAGS below.
+
+GLIBC_CONF_OPTS = \
+		--with-pkgversion="Buildroot" \
+		--without-cvs \
+		--disable-profile \
+		--without-gd \
+		--enable-obsolete-rpc \
+		--enable-kernel=$(call qstrip,$(BR2_TOOLCHAIN_HEADERS_AT_LEAST)) \
+		--with-headers=$(STAGING_DIR)/usr/include
+
+ifeq ($(BR2_x86_64),y)
+GLIBC_CONF_OPTS += --enable-lock-elision
+endif
+
+# Override the default library locations of /lib64/<abi> and
+# /usr/lib64/<abi>/ for RISC-V.
+ifeq ($(BR2_riscv),y)
+GLIBC_CONF_OPTS += libc_cv_slibdir=/lib64 libc_cv_rtlddir=/lib
+endif
+
 define GLIBC_CONFIGURE_CMDS
 	mkdir -p $(@D)/build
 	# Do the configuration
@@ -93,14 +113,8 @@ define GLIBC_CONFIGURE_CMDS
 		--build=$(GNU_HOST_NAME) \
 		--prefix=/usr \
 		--enable-shared \
-		$(if $(BR2_x86_64),--enable-lock-elision) \
-		--with-pkgversion="Buildroot" \
-		--without-cvs \
-		--disable-profile \
-		--without-gd \
-		--enable-obsolete-rpc \
-		--enable-kernel=$(call qstrip,$(BR2_TOOLCHAIN_HEADERS_AT_LEAST)) \
-		--with-headers=$(STAGING_DIR)/usr/include)
+		$(GLIBC_CONF_OPTS) \
+	)
 	$(GLIBC_ADD_MISSING_STUB_H)
 endef
 
