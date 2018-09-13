@@ -79,13 +79,13 @@ LINUX_HEADERS_PATCHES = $(call qstrip,$(BR2_LINUX_KERNEL_PATCH))
 LINUX_HEADERS_PATCH = $(filter ftp://% http://% https://%,$(LINUX_HEADERS_PATCHES))
 
 define LINUX_HEADERS_APPLY_LOCAL_PATCHES
-        for p in $(filter-out ftp://% http://% https://%,$(LINUX_HEADERS_PATCHES)) ; do \
-                if test -d $$p ; then \
-                        $(APPLY_PATCHES) $(@D) $$p \*.patch || exit 1 ; \
-                else \
-                        $(APPLY_PATCHES) $(@D) `dirname $$p` `basename $$p` || exit 1; \
-                fi \
-        done
+	for p in $(filter-out ftp://% http://% https://%,$(LINUX_HEADERS_PATCHES)) ; do \
+		if test -d $$p ; then \
+			$(APPLY_PATCHES) $(@D) $$p \*.patch || exit 1 ; \
+		else \
+			$(APPLY_PATCHES) $(@D) `dirname $$p` `basename $$p` || exit 1; \
+		fi \
+	done
 endef
 
 LINUX_HEADERS_POST_PATCH_HOOKS += LINUX_HEADERS_APPLY_LOCAL_PATCHES
